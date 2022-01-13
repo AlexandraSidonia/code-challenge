@@ -108,3 +108,24 @@ Feature: 00 Smoke Tests
     And user "User1" puts a "sell" order for security "BRK" with a price of 445000 and quantity of 100
     Then a trade occurs with the price of 445000 and quantity of 50
 
+  Scenario: Three users #1
+    Given one security "TSM" and three users "User1", "User2" and "User3" exist
+    When user "User1" puts a "buy" order for security "TSM" with a price of 117 and a quantity of 100
+    And user "User2" puts a "sell" order for security "TSM" with a price of 113 and quantity of 100
+    And user "User3" puts a "sell" order for security "TSM" with a price of 115 and quantity of 100
+    Then a trade occurs with the price of 113 and quantity of 100
+
+  Scenario: Three users #2
+    Given one security "TSM" and three users "User1", "User2" and "User3" exist
+    When user "User1" puts a "buy" order for security "TSM" with a price of 117 and a quantity of 100
+    And user "User2" puts a "sell" order for security "TSM" with a price of 115 and quantity of 100
+    And user "User3" puts a "sell" order for security "TSM" with a price of 113 and quantity of 100
+    Then a trade occurs with the price of 113 and quantity of 100
+
+  Scenario: Three users #3
+    Given one security "TSM" and three users "User1", "User2" and "User3" exist
+    When user "User1" puts a "sell" order for security "TSM" with a price of 113 and a quantity of 100
+    And user "User2" puts a "buy" order for security "TSM" with a price of 115 and quantity of 100
+    And user "User3" puts a "buy" order for security "TSM" with a price of 117 and quantity of 100
+    Then a trade occurs with the price of 113 and quantity of 100
+

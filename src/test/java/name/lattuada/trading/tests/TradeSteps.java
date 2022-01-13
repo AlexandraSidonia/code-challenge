@@ -30,6 +30,7 @@ public class TradeSteps {
     private final Map<String, UserDTO> userMap;
     private OrderDTO buyOrder;
     private OrderDTO sellOrder;
+    private OrderDTO secondOrder;
 
     boolean badrequest;
 
@@ -47,6 +48,8 @@ public class TradeSteps {
         createUser(userName1);
         createUser(userName2);
         badrequest = false;
+        buyOrder = null;
+        sellOrder = null;
     }
 
     @Given("two securities {string} and {string} and two users {string} and {string} exist")
@@ -146,16 +149,30 @@ public class TradeSteps {
         try {
             switch (orderType) {
                 case BUY -> {
-                    buyOrder = restUtility.post("api/orders",
-                            orderDTO,
-                            OrderDTO.class);
-                    logger.info("Order created: {}", buyOrder);
+                    if (buyOrder == null) {
+                        buyOrder = restUtility.post("api/orders",
+                                orderDTO,
+                                OrderDTO.class);
+                        logger.info("Order created: {}", buyOrder);
+                    } else {
+                        secondOrder = restUtility.post("api/orders",
+                                orderDTO,
+                                OrderDTO.class);
+                        logger.info("Order created: {}", secondOrder);
+                    }
                 }
                 case SELL -> {
-                    sellOrder = restUtility.post("api/orders",
-                            orderDTO,
-                            OrderDTO.class);
-                    logger.info("Order created: {}", sellOrder);
+                    if (sellOrder == null) {
+                        sellOrder = restUtility.post("api/orders",
+                                orderDTO,
+                                OrderDTO.class);
+                        logger.info("Order created: {}", sellOrder);
+                    } else {
+                        secondOrder = restUtility.post("api/orders",
+                                orderDTO,
+                                OrderDTO.class);
+                        logger.info("Order created: {}", secondOrder);
+                    }
                 }
             }
         } catch (HttpClientErrorException.BadRequest badRequest) {

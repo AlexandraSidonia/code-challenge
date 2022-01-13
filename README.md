@@ -97,8 +97,8 @@ the [Swagger interface](http://localhost:8080/swagger-ui/).
 
 ## Sidonia's notes
 
-The application contains the following bug: if the buy order has the quantity greater than the sell order, a trade will occur with the quantity in the buy order, which should 
-be impossible. 
+The application contains the following bug: if the buy order has the quantity greater than the sell order, a trade 
+will occur with the quantity in the buy order, which should be impossible.
 
   ```gherkin
   Scenario: Over demand
@@ -107,3 +107,25 @@ be impossible.
       And user "User1" puts a "buy" order for security "AAPL" with a price of 101 and quantity of 101
       Then a trade occurs with the price of 100 and quantity of 100
    ```
+
+Also, if we create a scenario with three users, one buying and two selling there is a bug in the way the application
+searches how to match trades: e.g. 
+
+  ```gherkin
+  Scenario: Three users #1
+Given one security "TSM" and three users "User1", "User2" and "User3" exist
+When user "User1" puts a "buy" order for security "TSM" with a price of 117 and a quantity of 100
+And user "User2" puts a "sell" order for security "TSM" with a price of 113 and quantity of 100
+And user "User3" puts a "sell" order for security "TSM" with a price of 115 and quantity of 100
+Then a trade occurs with the price of 113 and quantity of 100
+   ```
+ passes, but:
+  ```gherkin
+  Scenario: Three users #2
+Given one security "TSM" and three users "User1", "User2" and "User3" exist
+When user "User1" puts a "buy" order for security "TSM" with a price of 117 and a quantity of 100
+And user "User2" puts a "sell" order for security "TSM" with a price of 115 and quantity of 100
+And user "User3" puts a "sell" order for security "TSM" with a price of 113 and quantity of 100
+Then a trade occurs with the price of 113 and quantity of 100
+   ```
+fails. I would expect the application to look for the lowest price when buying.
